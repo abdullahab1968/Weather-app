@@ -31,19 +31,25 @@ router.get('/weather', function(req, res){
             .catch(err => res.send({'Error message': err}))
 
 })
-router.post('weather/add', function(req, res){
-    const newCity = req.query.city
-    const weather = new Weather({
-        cityName: newCity.cityName,
-        temperature: newCity.temperature,
-        condition: newCity.condition,
-        conditionPic: newCity.conditionPic
-
+router.post('/weather/add', function(req, res){
+    const newCity = JSON.parse(req.query.city)
+    Weather.find({cityName: newCity['cityName']}).then(result => {
+        console.log(newCity['cityName'])
+        if(result.length !== 0){
+            res.status(409).send({"Error": "409"})
+            return
+        }
     })
+    const weather = new Weather(newCity)
     weather.save()
-            .then(() => res.end())
+            .then( () => {
+                res.end()
+            })
+            .catch(err => res.send({'Error message': err}))
 })
 router.delete('/weather/delete', function(req, res){
-    Weather.find({cityName: req.query.city}).remove()
+    Weather.find({cityName: req.query.city})
+    Weather.deleteOne({cityName: req.query.city}).exec()
+    res.end()
 })
 module.exports = router
