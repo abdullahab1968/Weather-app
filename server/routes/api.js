@@ -30,12 +30,13 @@ router.get('/weather', function(req, res){
             params: {
                 lat: coordinates[0],
                 lon: coordinates[1],
-                appid: WEATHER.apiKey
+                appid: WEATHER.apiKey,
+                units: 'metric'
             }
         })
     }).catch((err) => res.send(err))
     .then(response => {
-        console.log('hi' + response.data)
+        console.log('hi')
         res.send(response.data)})
     .catch((err) => res.send(err))
 })
