@@ -19,19 +19,24 @@ router.get('/weather', function(req, res){
     }).then(response => {
         const lat = response.data[0].lat
         const lon = response.data[0].lon
-        return [lat, lon]
+        let ans = [lat, lon]
+        return ans
 
-    }).catch((err) => console.log(err))
+    }).catch((err) => {
+        res.send({"messege error:" : err})
+    })
     .then(coordinates => {
-        axios.get(WEATHER.weatherURL, {
+        return axios.get(WEATHER.weatherURL, {
             params: {
                 lat: coordinates[0],
                 lon: coordinates[1],
                 appid: WEATHER.apiKey
             }
         })
-    }).catch((err) => console.log(err))
-    .then(weatherData => res.send(weatherData))
-    .catch((err) => console.log(err))
+    }).catch((err) => res.send(err))
+    .then(response => {
+        console.log('hi' + response.data)
+        res.send(response.data)})
+    .catch((err) => res.send(err))
 })
 module.exports = router
