@@ -10,34 +10,17 @@ const axios = require('axios')
 
 router.get('/weather', function(req, res){
     const city = req.query.city
-    axios.get (WEATHER.geocodeURL, {
+    return axios.get (WEATHER.weatherURL, {
         params: {
             q: city,
-            limit: 1,
-            appid : WEATHER.apiKey
-        }
-    }).then(response => {
-        const lat = response.data[0].lat
-        const lon = response.data[0].lon
-        let ans = [lat, lon]
-        return ans
+            appid : WEATHER.apiKey,
+            units: 'metric'
 
-    }).catch((err) => {
-        res.send({"messege error:" : err})
+        }
     })
-    .then(coordinates => {
-        return axios.get(WEATHER.weatherURL, {
-            params: {
-                lat: coordinates[0],
-                lon: coordinates[1],
-                appid: WEATHER.apiKey,
-                units: 'metric'
-            }
-        })
-    }).catch((err) => res.send(err))
     .then(response => {
-        console.log('hi')
-        res.send(response.data)})
+        res.send(response.data)
+    })
     .catch((err) => res.send(err))
 })
 module.exports = router
